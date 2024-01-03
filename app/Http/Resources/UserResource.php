@@ -25,6 +25,8 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'gender' => $this->gender,
             'profile_picture' => $this->profile_picture,
+            'followers_count' => $this->followers->count(),
+            'followings_count' => $this->followings->count(),
         ];
     }
 }

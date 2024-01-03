@@ -40,10 +40,18 @@ class UserController extends Controller
         }
     }
 
-    public function viewUser() {
+    public function viewUser()
+    {
         $users = User::all();
         return UserResource::collection($users);
     }
+
+    public function viewUserDetails(Request $request)
+    {
+        $user = User::find($request->id)->first();
+        return new UserResource($user);
+    }
+
 
     public function updateUser(Request $request)
     {
@@ -102,4 +110,83 @@ class UserController extends Controller
             'data' => []
         ];
     }
+
+    public function followUser(Request $request)
+    {
+        try {
+            $userToFollow = User::find($request->id);
+
+            // Check if the user is trying to follow themselves
+            if ($request->user()->id == $userToFollow->id) {
+                return [
+                    'status' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Cannot follow yourself',
+                    'data' => []
+                ];
+            }
+
+            // Check if the user is already following the target user
+            if ($request->user()->followings()->where('users.id', $userToFollow->id)->exists()) {
+                return [
+                    'status' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'User is already followed',
+                    'data' => []
+                ];
+            }
+
+            $request->user()->followings()->attach($userToFollow);
+
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'User Followed',
+                'data' => []
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+        }
+    }
+
+    public function unfollowUser(Request $request)
+    {
+        try {
+            $userToUnfollow = User::find($request->id);
+
+            // Check if the user is trying to unfollow themselves
+            if ($request->user()->id == $userToUnfollow->id) {
+                return [
+                    'status' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Cannot unfollow yourself',
+                    'data' => []
+                ];
+            }
+
+            // Check if the user is not currently following the target user
+            if (!$request->user()->followings()->where('users.id', $userToUnfollow->id)->exists()) {
+                return [
+                    'status' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'User is not currently followed',
+                    'data' => []
+                ];
+            }
+
+            $request->user()->followings()->detach($userToUnfollow);
+
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'User Unfollowed',
+                'data' => []
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+        }
+    }
+    
 }
