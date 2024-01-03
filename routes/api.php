@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\CommentController;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,13 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewRecipeDetails', [RecipeController::class, 'show']);
         Route::patch('updateRecipe', [RecipeController::class, 'update']);
         Route::delete('deleteRecipe', [RecipeController::class, 'destroy']);
+        Route::post('addFavorite', [RecipeController::class, 'addFavorite']);
+        Route::get('viewFavorite', [RecipeController::class, 'viewFavorite']);
+        Route::delete('deleteFavorite', [RecipeController::class, 'deleteFavorite']);
+
+        Route::post('createComment', [CommentController::class, 'store']);
+        Route::get('viewUserComments', [CommentController::class, 'viewUserComments']);
+        Route::delete('deleteComment', [CommentController::class, 'destroy']);
     }
 );
 

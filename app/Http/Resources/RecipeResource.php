@@ -26,6 +26,7 @@ class RecipeResource extends JsonResource
             'servings' => $this->servings,
             'time' => $this->time,
             'categories' => $this->categories,
+            'comments' => $this->comments
         ];
     }
 }

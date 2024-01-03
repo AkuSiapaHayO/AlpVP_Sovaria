@@ -170,4 +170,100 @@ class RecipeController extends Controller
             ];
         }
     }
+
+    public function addFavorite(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $recipe = Recipe::find($request->id);
+
+            if (!$recipe) {
+                return [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Recipe not found',
+                    'data' => [],
+                ];
+            }
+
+            if ($user->savedRecipes()->where('recipe_id', $request->id)->exists()) {
+                return [
+                    'status' => Response::HTTP_CONFLICT,
+                    'message' => 'Recipe already saved',
+                    'data' => [],
+                ];
+            }
+
+            $user->savedRecipes()->attach($recipe);
+
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'Recipe saved successfully',
+                'data' => [],
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    public function viewFavorite(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $savedRecipes = RecipeResource::collection($user->savedRecipes);
+
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'Saved recipes retrieved successfully',
+                'data' => $savedRecipes,
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    public function deleteFavorite(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $recipe = Recipe::find($request->id);
+
+            if (!$recipe) {
+                return [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Recipe not found',
+                    'data' => [],
+                ];
+            }
+
+            if (!$user->savedRecipes()->where('recipe_id', $request->id)->exists()) {
+                return [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Recipe not saved by the user',
+                    'data' => [],
+                ];
+            }
+
+            $user->savedRecipes()->detach($recipe);
+
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'Recipe unsaved successfully',
+                'data' => [],
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
 }
