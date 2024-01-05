@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('phone');
             $table->string('gender');
-            $table->string('profile_picture');
+            $table->string('profile_picture')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
