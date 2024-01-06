@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthenticationController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\CommentController;
@@ -43,6 +44,8 @@ Route::middleware(['auth:sanctum'])->group(
         Route::post('addFavorite', [RecipeController::class, 'addFavorite']);
         Route::get('viewFavorite', [RecipeController::class, 'viewFavorite']);
         Route::delete('deleteFavorite', [RecipeController::class, 'deleteFavorite']);
+
+        Route::get('viewCategory', [CategoryController::class, 'index']);
 
         Route::post('createComment', [CommentController::class, 'store']);
         Route::get('viewUserComments', [CommentController::class, 'viewUserComments']);

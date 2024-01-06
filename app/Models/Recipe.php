@@ -18,7 +18,8 @@ class Recipe extends Model
         'calorie',
         'servings',
         'time',
-        'user_id'
+        'user_id',
+        'recipe_category'
     ];
 
     public function categories()
