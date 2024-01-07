@@ -22,7 +22,12 @@ class AuthenticationController extends Controller
                 return [
                     'status' => Response::HTTP_OK,
                     'message' => 'Token Created',
-                    'data' => $user->createToken('login')->plainTextToken
+                    'userid' => $user->id,
+                    'token' => $user->createToken('login')->plainTextToken,
+                    // 'data' => [
+                    //     'token' => $user->createToken('login')->plainTextToken,
+                    //     'user_id' => $user->id,
+                    // ],
                 ];
             } else {
                 return [
