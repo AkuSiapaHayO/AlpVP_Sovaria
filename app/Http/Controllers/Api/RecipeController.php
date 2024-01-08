@@ -43,7 +43,14 @@ class RecipeController extends Controller
             $recipe->caption = $request->caption;
             $recipe->ingredients = $request->ingredients;
             $recipe->steps = $request->steps;
-            $recipe->image = $request->image;
+            if ($request->file) {
+                $image = $request->file;
+                $imageName = time() . '.' . $image->extension();
+                $image->move(public_path('images'), $imageName);
+                $recipe->image = 'http://10.0.2.2:8000/images/' . $imageName;
+            } else {
+                $recipe->image = null;
+            }
             $recipe->calorie = $request->calorie;
             $recipe->servings = $request->servings;
             $recipe->time = $request->time;
