@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewRecipe', [RecipeController::class, 'index']);
         Route::get('viewRecipeDetails', [RecipeController::class, 'show']);
         Route::patch('updateRecipe', [RecipeController::class, 'update']);
+        Route::put('updateRecipeImage', [RecipeController::class, 'updateImage']);
         Route::delete('deleteRecipe', [RecipeController::class, 'destroy']);
         Route::post('addFavorite', [RecipeController::class, 'addFavorite']);
         Route::get('viewFavorite', [RecipeController::class, 'viewFavorite']);

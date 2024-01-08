@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -66,7 +68,15 @@ class UserController extends Controller
                 $user->description = $request->description;
                 $user->phone = $request->phone;
                 $user->gender = $request->gender;
-                $user->profile_picture = $request->profile_picture;
+                if ($request->file) {
+                    $photo = $request->file;
+                    $photoName = time() . '.' . $photo->extension();
+                    $photo->move(public_path('photos'), $photoName);
+                    $user->profile_picture = 'https://http://10.0.2.2:8000/photos/' . $photoName;
+                } 
+                else {
+                    $user->profile_picture = 'https://yourteachingmentor.com/wp-content/uploads/2020/12/istockphoto-1223671392-612x612-1.jpg';
+                }
                 $user->save();
                 return [
                     'status' => Response::HTTP_OK,
@@ -87,6 +97,64 @@ class UserController extends Controller
             'message' => 'User not Found',
             'data' => []
         ];
+    }
+
+    public function updateImage(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return [
+                'status' => Response::HTTP_UNAUTHORIZED,
+                'message' => "User not authenticated",
+                'data' => []
+            ];
+        }
+
+        try {
+            $oldData = [
+                'profile_picture' => $user->profile_picture,
+            ];
+            if ($request->file) {
+                $oldImagePath = public_path('photos') . '/' . $user->profile_picture;
+                if (File::exists($oldImagePath)) {
+                    File::delete($oldImagePath);
+                }
+            
+                $photo = $request->file;
+                if ($photo) {
+                    $photoName = time() . '.' . $photo->extension();
+                } else {
+                   return [
+                        'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                        'message' => "Image is not valid",
+                        'data' => []
+                    ];
+                }
+                $photo->move(public_path('photos'), $photoName);
+                $user->photo = 'https://http://10.0.2.2:8000/photos/' . $photoName;
+            } else {
+                $user->photo = $oldData['photo'];
+                return [
+                    'status' => Response::HTTP_OK,
+                    'message' => "No image uploaded",
+                    'data' => $user
+                ];
+            }
+
+            $user->save();
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => "User updated successfully",
+                'data' => $user
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+        }
     }
 
     public function deleteUser(Request $request)

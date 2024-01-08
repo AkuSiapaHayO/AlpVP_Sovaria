@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Resources\RecipeResource;
 use App\Http\Requests\StoreRecipeRequest;
 use App\Http\Requests\UpdateRecipeRequest;
@@ -134,6 +135,51 @@ class RecipeController extends Controller
             'message' => 'User not Found',
             'data' => []
         ];
+    }
+
+    public function updateImage(Request $request)
+    {
+        try {
+            $recipe = Recipe::findOrFail($request->id);
+            $oldData = [
+                'image' => $recipe->image,
+            ];
+            if ($request->file) {
+                $oldImagePath = public_path('images') . '/' . $recipe->image;
+                if (File::exists($oldImagePath)) {
+                    File::delete($oldImagePath);
+                }
+            
+                $image = $request->file;
+                if ($image) {
+                    $imageName = time() . '.' . $image->extension();
+                } else {
+                   return [
+                        'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                        'message' => "Image is not valid",
+                        'data' => []
+                    ];
+                }
+                $image->move(public_path('images'), $imageName);
+                $recipe->image = 'http://10.0.2.2:8000/images/' . $imageName;
+            } else {
+                $recipe->image = $oldData['image'];
+                return [
+                    'status' => Response::HTTP_OK,
+                    'message' => "No image uploaded",
+                    'data' => $recipe->loadMissing('user:id,name')
+                ];
+            }
+
+            $recipe->save();
+            return $recipe->loadMissing('user:id,name');
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+        }
     }
 
     /**
