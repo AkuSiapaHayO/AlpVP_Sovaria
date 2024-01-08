@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewUser', [UserController::class, 'viewUser']);
         // Route::get('viewUserDetails/{id}', [UserController::class, 'viewUserDetails']);
         Route::patch('updateUser', [UserController::class, 'updateUser']);
+        Route::put('updateUserImage', [UserController::class, 'updateImage']);
         Route::get('logout', [AuthenticationController::class, 'logout']);
         Route::delete('deleteUser', [UserController::class, 'deleteUser']);
         Route::post('followUser', [UserController::class, 'followUser']);
