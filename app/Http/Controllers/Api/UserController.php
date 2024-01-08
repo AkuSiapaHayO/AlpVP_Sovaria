@@ -26,7 +26,15 @@ class UserController extends Controller
             $user->description = $request->description;
             $user->phone = $request->phone;
             $user->gender = $request->gender;
-            $user->profile_picture = $request->profile_picture;
+            if ($request->file) {
+                $photo = $request->file;
+                $photoName = time() . '.' . $photo->extension();
+                $photo->move(public_path('photos'), $photoName);
+                $user->profile_picture = 'http://10.0.2.2:8000/photos/' . $photoName;
+            } 
+            else {
+                $user->profile_picture = 'https://yourteachingmentor.com/wp-content/uploads/2020/12/istockphoto-1223671392-612x612-1.jpg';
+            }
             $user->save();
             return [
                 'status' => Response::HTTP_OK,
@@ -48,9 +56,9 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    public function viewUserDetails(Int $id)
+    public function viewUserDetails(Request $request)
     {
-        $user = User::find($id)->first();
+        $user = User::find($request->id)->first();
         return new UserResource($user);
     }
 
@@ -68,15 +76,6 @@ class UserController extends Controller
                 $user->description = $request->description;
                 $user->phone = $request->phone;
                 $user->gender = $request->gender;
-                if ($request->file) {
-                    $photo = $request->file;
-                    $photoName = time() . '.' . $photo->extension();
-                    $photo->move(public_path('photos'), $photoName);
-                    $user->profile_picture = 'https://http://10.0.2.2:8000/photos/' . $photoName;
-                } 
-                else {
-                    $user->profile_picture = 'https://yourteachingmentor.com/wp-content/uploads/2020/12/istockphoto-1223671392-612x612-1.jpg';
-                }
                 $user->save();
                 return [
                     'status' => Response::HTTP_OK,
@@ -134,7 +133,7 @@ class UserController extends Controller
                 $photo->move(public_path('photos'), $photoName);
                 $user->photo = 'https://http://10.0.2.2:8000/photos/' . $photoName;
             } else {
-                $user->photo = $oldData['photo'];
+                $user->photo = $oldData['profile_picture'];
                 return [
                     'status' => Response::HTTP_OK,
                     'message' => "No image uploaded",
@@ -184,7 +183,6 @@ class UserController extends Controller
         try {
             $userToFollow = User::find($request->id);
 
-            // Check if the user is trying to follow themselves
             if ($request->user()->id == $userToFollow->id) {
                 return [
                     'status' => Response::HTTP_BAD_REQUEST,
@@ -193,7 +191,6 @@ class UserController extends Controller
                 ];
             }
 
-            // Check if the user is already following the target user
             if ($request->user()->followings()->where('users.id', $userToFollow->id)->exists()) {
                 return [
                     'status' => Response::HTTP_BAD_REQUEST,
@@ -223,7 +220,6 @@ class UserController extends Controller
         try {
             $userToUnfollow = User::find($request->id);
 
-            // Check if the user is trying to unfollow themselves
             if ($request->user()->id == $userToUnfollow->id) {
                 return [
                     'status' => Response::HTTP_BAD_REQUEST,
@@ -232,7 +228,6 @@ class UserController extends Controller
                 ];
             }
 
-            // Check if the user is not currently following the target user
             if (!$request->user()->followings()->where('users.id', $userToUnfollow->id)->exists()) {
                 return [
                     'status' => Response::HTTP_BAD_REQUEST,

@@ -110,7 +110,6 @@ class RecipeController extends Controller
                         'caption' => $request->caption,
                         'ingredients' => $request->ingredients,
                         'steps' => $request->steps,
-                        'image' => $request->image,
                         'calorie' => $request->calorie,
                         'servings' => $request->servings,
                         'time' => $request->time,
