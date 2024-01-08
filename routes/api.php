@@ -25,11 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('createUser', [UserController::class, 'createUser']);
-Route::post('login', [AuthenticationController::class, 'login']);
+Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+Route::get('viewUserDetails', [UserController::class, 'viewUserDetails'])->name('viewUserDetails');
 Route::middleware(['auth:sanctum'])->group(
     function () {
         Route::get('viewUser', [UserController::class, 'viewUser']);
-        Route::get('viewUserDetails', [UserController::class, 'viewUserDetails']);
+        // Route::get('viewUserDetails/{id}', [UserController::class, 'viewUserDetails']);
         Route::patch('updateUser', [UserController::class, 'updateUser']);
         Route::get('logout', [AuthenticationController::class, 'logout']);
         Route::delete('deleteUser', [UserController::class, 'deleteUser']);

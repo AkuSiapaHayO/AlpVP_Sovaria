@@ -46,9 +46,9 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    public function viewUserDetails(Request $request)
+    public function viewUserDetails(Int $id)
     {
-        $user = User::find($request->id)->first();
+        $user = User::find($id)->first();
         return new UserResource($user);
     }
 
