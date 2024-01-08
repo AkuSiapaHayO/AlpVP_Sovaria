@@ -20,7 +20,8 @@ class RecipeController extends Controller
     public function index()
     {
         $recipes = Recipe::all();
-        return RecipeResource::collection($recipes);
+        return response()->json(RecipeResource::collection($recipes));
+        // return RecipeResource::collection($recipes);
     }
 
     /**
