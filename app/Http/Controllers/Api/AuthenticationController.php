@@ -32,14 +32,16 @@ class AuthenticationController extends Controller
                 return [
                     'status' => Response::HTTP_FORBIDDEN,
                     'message' => 'Incorrect Password',
-                    'data' => []
+                    'userid' => -1,
+                    'token' => []
                 ];
             }
         } else {
             return [
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'User not Found',
-                'data' => []
+                'userid' => -1,
+                'token' => []
             ];
         }
     }

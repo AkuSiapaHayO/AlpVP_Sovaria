@@ -31,7 +31,7 @@ class UserController extends Controller
                 $photoName = time() . '.' . $photo->extension();
                 $photo->move(public_path('photos'), $photoName);
                 $user->profile_picture = 'http://10.0.2.2:8000/photos/' . $photoName;
-            } 
+            }
             else {
                 $user->profile_picture = 'https://yourteachingmentor.com/wp-content/uploads/2020/12/istockphoto-1223671392-612x612-1.jpg';
             }
@@ -58,8 +58,9 @@ class UserController extends Controller
 
     public function viewUserDetails(Request $request)
     {
-        $user = User::find($request->id)->first();
-        return new UserResource($user);
+        $user = User::find($request->id);
+        return response()->json(new UserResource($user));
+        // return $user;
     }
 
 
@@ -119,7 +120,7 @@ class UserController extends Controller
                 if (File::exists($oldImagePath)) {
                     File::delete($oldImagePath);
                 }
-            
+
                 $photo = $request->file;
                 if ($photo) {
                     $photoName = time() . '.' . $photo->extension();
