@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('calorie');
             $table->integer('servings');
             $table->integer('time');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
