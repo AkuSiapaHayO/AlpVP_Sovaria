@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             UserSeeder::class,
+            RecipeSeeder::class,
+            FollowingsSeeder::class,
+            SavesSeeder::class,
         ]);
 
         Model::reguard();
