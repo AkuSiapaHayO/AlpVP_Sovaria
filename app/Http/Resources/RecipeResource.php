@@ -27,7 +27,21 @@ class RecipeResource extends JsonResource
             'time' => $this->time,
             'categories' => $this->categories,
             'comments' => $this->comments,
-            'saved_by_users_count' => $this->savedByUsers()->count(),
+            'saved_by_users_count' => $this->savedByUsers->count(),
+            'saved_by_user' => $this->isSavedByCurrentUser(),
         ];
+
+        
+    }
+
+    private function isSavedByCurrentUser()
+    {
+        $currentUser = auth()->user();
+
+        if (!$currentUser) {
+            return false;
+        }
+
+        return $currentUser->savedRecipes->contains('id', $this->id);
     }
 }
