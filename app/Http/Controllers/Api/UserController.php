@@ -53,7 +53,8 @@ class UserController extends Controller
     public function viewUser()
     {
         $users = User::all();
-        return UserResource::collection($users);
+        return response()->json(UserResource::collection($users));
+        // return UserResource::collection($users);
     }
 
     public function viewUserDetails(Request $request)

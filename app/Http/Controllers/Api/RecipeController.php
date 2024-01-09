@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\RecipeResource;
 use App\Http\Requests\StoreRecipeRequest;
@@ -20,8 +21,8 @@ class RecipeController extends Controller
     public function index()
     {
         $recipes = Recipe::all();
-        // return RecipeResource::collection($recipes);
         return response()->json(RecipeResource::collection($recipes));
+        // return RecipeResource::collection($recipes);
     }
 
     /**
@@ -319,4 +320,38 @@ class RecipeController extends Controller
             ];
         }
     }
+
+public function getRecipesFromFollowedUsers()
+{
+    try {
+        $currentUser = Auth::user();
+
+        if (!$currentUser) {
+            return [
+                'status' => Response::HTTP_UNAUTHORIZED,
+                'message' => 'User not logged in',
+                'data' => [],
+            ];
+        }
+
+        $followingIds = $currentUser->following->pluck('following_id');
+
+        $recipesFromFollowedUsers = Recipe::whereIn('user_id', $followingIds)->get();
+
+        return response()->json(RecipeResource::collection($recipesFromFollowedUsers));
+
+        // return [
+        //     'status' => Response::HTTP_OK,
+        //     'message' => 'Recipes from followed users retrieved successfully',
+        //     'data' => $recipesFromFollowedUsers,
+        // ];
+    } catch (Exception $e) {
+        return [
+            'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            'message' => $e->getMessage(),
+            'data' => [],
+        ];
+    }
+}
+
 }

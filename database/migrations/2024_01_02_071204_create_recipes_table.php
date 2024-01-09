@@ -16,11 +16,11 @@ return new class extends Migration {
             $table->text('caption');
             $table->text('ingredients');
             $table->text('steps');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->integer('calorie');
             $table->integer('servings');
             $table->integer('time');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

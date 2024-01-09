@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Recipe;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Resources\CommentResource;
@@ -121,32 +122,37 @@ class CommentController extends Controller
         }
     }
 
-    public function viewUserComments(Request $request)
-    {
-        try {
-            $user = $request->user();
+    public function viewRecipeComments(Request $request)
+{
+    try {
+        $recipe = Recipe::find($request->id);
 
-            if (!$user) {
-                return [
-                    'status' => Response::HTTP_UNAUTHORIZED,
-                    'message' => 'Unauthorized',
-                    'data' => [],
-                ];
-            }
-
-            $comments = CommentResource::collection($user->comments);
-
+        if (!$recipe) {
             return [
-                'status' => Response::HTTP_OK,
-                'message' => 'User Comments Retrieved',
-                'data' => $comments,
-            ];
-        } catch (Exception $e) {
-            return [
-                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => $e->getMessage(),
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Recipe not found',
                 'data' => [],
             ];
         }
+
+        $comments = $recipe->comments;
+
+        if (!$comments) {
+            return [
+                'status' => Response::HTTP_OK,
+                'message' => 'No comments found for the recipe',
+                'data' => [],
+            ];
+        }
+
+        return response()->json(CommentResource::collection($comments));
+    } catch (Exception $e) {
+        return [
+            'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            'message' => $e->getMessage(),
+            'data' => [],
+        ];
     }
+}
+
 }
