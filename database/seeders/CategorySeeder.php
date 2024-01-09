@@ -14,12 +14,12 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Appetizers'],
-            ['name' => 'Main Dishes'],
-            ['name' => 'Desserts'],
-            ['name' => 'Beverages'],
+            ['name' => 'Appetizers', 'category_image' => 'http://10.0.2.2:8000/categories/appetizer_image.jpeg'],
+            ['name' => 'Main Dishes', 'category_image' => 'http://10.0.2.2:8000/categories/main_dish_image.jpg'],
+            ['name' => 'Desserts', 'category_image' => 'http://10.0.2.2:8000/categories/dessert_image.jpg'],
+            ['name' => 'Beverages', 'category_image' => 'http://10.0.2.2:8000/categories/beverage_image.jpg'],
         ];
-
+    
         Category::insert($categories);
     }
 }
