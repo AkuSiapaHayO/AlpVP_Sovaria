@@ -20,7 +20,8 @@ class RecipeController extends Controller
     public function index()
     {
         $recipes = Recipe::all();
-        return RecipeResource::collection($recipes);
+        // return RecipeResource::collection($recipes);
+        return response()->json(RecipeResource::collection($recipes));
     }
 
     /**
@@ -148,7 +149,7 @@ class RecipeController extends Controller
                 if (File::exists($oldImagePath)) {
                     File::delete($oldImagePath);
                 }
-            
+
                 $image = $request->file;
                 if ($image) {
                     $imageName = time() . '.' . $image->extension();
