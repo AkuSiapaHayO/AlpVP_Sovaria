@@ -47,12 +47,14 @@ Route::middleware(['auth:sanctum'])->group(
         Route::post('addFavorite', [RecipeController::class, 'addFavorite']);
         Route::get('viewFavorite', [RecipeController::class, 'viewFavorite']);
         Route::delete('deleteFavorite', [RecipeController::class, 'deleteFavorite']);
-
+        
         Route::get('viewCategory', [CategoryController::class, 'index']);
-
+        
         Route::post('createComment', [CommentController::class, 'store']);
         Route::get('viewRecipeComments', [CommentController::class, 'viewRecipeComments']);
         Route::delete('deleteComment', [CommentController::class, 'destroy']);
+        
+        Route::get('viewFollowedRecipe', [RecipeController::class, 'getRecipesFromFollowedUsers']);
     }
 );
 
