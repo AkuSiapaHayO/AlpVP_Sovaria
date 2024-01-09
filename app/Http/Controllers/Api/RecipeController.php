@@ -155,7 +155,7 @@ class RecipeController extends Controller
                 if ($image) {
                     $imageName = time() . '.' . $image->extension();
                 } else {
-                   return [
+                    return [
                         'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                         'message' => "Image is not valid",
                         'data' => []
@@ -350,5 +350,36 @@ class RecipeController extends Controller
             ];
         }
     }
+
+    public function searchRecipes(Request $request)
+    {
+        try {
+            $currentUser = Auth::user();
+
+            if (!$currentUser) {
+                return [
+                    'status' => Response::HTTP_UNAUTHORIZED,
+                    'message' => 'User not logged in',
+                    'data' => [],
+                ];
+            }
+
+            $searchString = $request->input('search');
+
+            $filteredRecipes = Recipe::where('recipe_name', 'like', "%$searchString%")
+                ->orWhere('categories', 'like', "%$searchString%")
+                ->get();
+
+            return response()->json(RecipeResource::collection($filteredRecipes));
+
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
 
 }
