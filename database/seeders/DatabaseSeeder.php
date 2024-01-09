@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             RecipeSeeder::class,
             FollowingsSeeder::class,
             SavesSeeder::class,
+            CommentSeeder::class,
         ]);
 
         Model::reguard();
