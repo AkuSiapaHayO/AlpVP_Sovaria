@@ -40,20 +40,20 @@ Route::middleware(['auth:sanctum'])->group(
 
         Route::post('createRecipe', [RecipeController::class, 'store']);
         Route::get('viewRecipe', [RecipeController::class, 'index']);
-        Route::get('viewRecipeDetails', [RecipeController::class, 'show']);
+        Route::get('viewRecipeDetails/{id}', [RecipeController::class, 'show']);
         Route::patch('updateRecipe', [RecipeController::class, 'update']);
         Route::put('updateRecipeImage', [RecipeController::class, 'updateImage']);
         Route::delete('deleteRecipe', [RecipeController::class, 'destroy']);
         Route::post('addFavorite', [RecipeController::class, 'addFavorite']);
         Route::get('viewFavorite', [RecipeController::class, 'viewFavorite']);
         Route::delete('deleteFavorite', [RecipeController::class, 'deleteFavorite']);
-        
+
         Route::get('viewCategory', [CategoryController::class, 'index']);
-        
+
         Route::post('createComment', [CommentController::class, 'store']);
         Route::get('viewRecipeComments', [CommentController::class, 'viewRecipeComments']);
         Route::delete('deleteComment', [CommentController::class, 'destroy']);
-        
+
         Route::get('viewFollowedRecipe', [RecipeController::class, 'getRecipesFromFollowedUsers']);
         Route::get('searchRecipes', [RecipeController::class, 'searchRecipes']);
         Route::get('viewRecipeByCategory', [RecipeController::class, 'getRecipesByCategory']);
