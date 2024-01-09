@@ -269,13 +269,14 @@ class RecipeController extends Controller
     {
         try {
             $user = $request->user();
-            $savedRecipes = RecipeResource::collection($user->savedRecipes);
+            // $savedRecipes = RecipeResource::collection($user->savedRecipes);
 
-            return [
-                'status' => Response::HTTP_OK,
-                'message' => 'Saved recipes retrieved successfully',
-                'data' => $savedRecipes,
-            ];
+            return response()->json(RecipeResource::collection($user->savedRecipes));
+            // return [
+            //     'status' => Response::HTTP_OK,
+            //     'message' => 'Saved recipes retrieved successfully',
+            //     'data' => $savedRecipes,
+            // ];
         } catch (Exception $e) {
             return [
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
