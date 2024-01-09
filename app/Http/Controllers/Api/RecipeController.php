@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use Exception;
+use App\Models\User;
 use App\Models\Recipe;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -383,5 +385,71 @@ class RecipeController extends Controller
         }
     }
 
+    public function getRecipesByCategory(Request $request)
+    {
+        try {
+            $category = Category::find($request->id);
 
+            if (!$category) {
+                return [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Category not found',
+                    'data' => [],
+                ];
+            }
+
+            $recipes = $category->recipes;
+
+            return response()->json(RecipeResource::collection($recipes));
+
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    public function getRecipesByUser(Request $request)
+    {
+        try {
+            $user = User::find($request->id);
+
+            if (!$user) {
+                return [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Category not found',
+                    'data' => [],
+                ];
+            }
+
+            $recipes = $user->recipes;
+
+            return response()->json(RecipeResource::collection($recipes));
+
+        } catch(Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    public function getTopSavedRecipes()
+    {
+        try {
+            $topRecipes = Recipe::withCount('savedByUsers')->orderByDesc('saved_by_users_count')->take(5)->get();
+
+            return response()->json(RecipeResource::collection($topRecipes));
+
+        } catch (Exception $e) {
+            return [
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
 }
