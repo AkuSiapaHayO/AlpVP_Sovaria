@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->text('caption');
             $table->text('ingredients');
             $table->text('steps');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->integer('calorie');
             $table->integer('servings');
             $table->integer('time');

@@ -51,7 +51,7 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewCategory', [CategoryController::class, 'index']);
 
         Route::post('createComment', [CommentController::class, 'store']);
-        Route::get('viewUserComments', [CommentController::class, 'viewUserComments']);
+        Route::get('viewRecipeComments', [CommentController::class, 'viewRecipeComments']);
         Route::delete('deleteComment', [CommentController::class, 'destroy']);
     }
 );
