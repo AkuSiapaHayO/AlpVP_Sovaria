@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum'])->group(
         Route::delete('deleteComment', [CommentController::class, 'destroy']);
         
         Route::get('viewFollowedRecipe', [RecipeController::class, 'getRecipesFromFollowedUsers']);
+        Route::get('searchRecipes', [RecipeController::class, 'searchRecipes']);
     }
 );
 
