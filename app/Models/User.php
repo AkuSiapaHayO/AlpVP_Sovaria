@@ -59,6 +59,7 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followings', 'follower_id', 'following_id')->withTimestamps();
     }
 
+
     public function recipes()
     {
         return $this->hasMany(Recipe::class);

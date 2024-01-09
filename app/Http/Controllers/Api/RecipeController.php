@@ -321,37 +321,34 @@ class RecipeController extends Controller
         }
     }
 
-public function getRecipesFromFollowedUsers()
-{
-    try {
-        $currentUser = Auth::user();
+    public function getRecipesFromFollowedUsers()
+    {
+        try {
+            $currentUser = Auth::user();
 
-        if (!$currentUser) {
+            if (!$currentUser) {
+                return [
+                    'status' => Response::HTTP_UNAUTHORIZED,
+                    'message' => 'User not logged in',
+                    'data' => [],
+                ];
+            }
+
+            $currentUser->load('followings');
+
+            $followingUserIds = $currentUser->followings->pluck('id')->toArray();
+
+            $recipesFromFollowedUsers = Recipe::whereIn('user_id', $followingUserIds)->get();
+
+            return response()->json(RecipeResource::collection($recipesFromFollowedUsers));
+
+        } catch (Exception $e) {
             return [
-                'status' => Response::HTTP_UNAUTHORIZED,
-                'message' => 'User not logged in',
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage(),
                 'data' => [],
             ];
         }
-
-        $followingIds = $currentUser->following->pluck('following_id');
-
-        $recipesFromFollowedUsers = Recipe::whereIn('user_id', $followingIds)->get();
-
-        return response()->json(RecipeResource::collection($recipesFromFollowedUsers));
-
-        // return [
-        //     'status' => Response::HTTP_OK,
-        //     'message' => 'Recipes from followed users retrieved successfully',
-        //     'data' => $recipesFromFollowedUsers,
-        // ];
-    } catch (Exception $e) {
-        return [
-            'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'message' => $e->getMessage(),
-            'data' => [],
-        ];
     }
-}
 
 }
