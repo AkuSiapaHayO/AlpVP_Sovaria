@@ -367,7 +367,7 @@ class RecipeController extends Controller
                 ];
             }
 
-            $searchString = $request->input('search');
+            $searchString = $request->search;
 
             $filteredRecipes = Recipe::where('recipe_name', 'like', "%$searchString%")
                 ->orWhereHas('categories', function ($query) use ($searchString) {

@@ -51,11 +51,11 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewCategory', [CategoryController::class, 'index']);
 
         Route::post('createComment', [CommentController::class, 'store']);
-        Route::get('viewRecipeComments', [CommentController::class, 'viewRecipeComments']);
+        Route::get('viewRecipeComments/{id}', [CommentController::class, 'viewRecipeComments']);
         Route::delete('deleteComment', [CommentController::class, 'destroy']);
 
         Route::get('viewFollowedRecipe', [RecipeController::class, 'getRecipesFromFollowedUsers']);
-        Route::get('searchRecipes', [RecipeController::class, 'searchRecipes']);
+        Route::get('searchRecipes/{search}', [RecipeController::class, 'searchRecipes']);
         Route::get('viewRecipeByCategory', [RecipeController::class, 'getRecipesByCategory']);
         Route::get('viewRecipeByUser', [RecipeController::class, 'getRecipesByUser']);
         Route::get('viewTopSavedRecipe', [RecipeController::class, 'getTopSavedRecipes']);

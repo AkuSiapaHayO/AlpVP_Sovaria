@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\CommentUserResource;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -145,7 +146,7 @@ class CommentController extends Controller
             ];
         }
 
-        return response()->json(CommentResource::collection($comments));
+        return response()->json(CommentUserResource::collection($comments));
     } catch (Exception $e) {
         return [
             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
