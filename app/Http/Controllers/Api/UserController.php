@@ -254,4 +254,22 @@ class UserController extends Controller
         }
     }
 
+    public function getFollowers()
+    {
+        $user = Auth::user();
+
+        $followers = $user->followers;
+
+        return response()->json(UserResource::collection($followers));
+    }
+
+    public function getFollowings()
+    {
+        $user = Auth::user();
+
+        $followings = $user->followings;
+
+        return response()->json(UserResource::collection($followings));
+    }
+
 }

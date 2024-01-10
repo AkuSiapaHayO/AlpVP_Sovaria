@@ -59,6 +59,8 @@ Route::middleware(['auth:sanctum'])->group(
         Route::get('viewRecipeByCategory', [RecipeController::class, 'getRecipesByCategory']);
         Route::get('viewRecipeByUser', [RecipeController::class, 'getRecipesByUser']);
         Route::get('viewTopSavedRecipe', [RecipeController::class, 'getTopSavedRecipes']);
+        Route::get('getFollowers', [UserController::class, 'getFollowers']);
+        Route::get('getFollowings', [UserController::class, 'getFollowings']);
     }
 );
 
